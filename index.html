@@ -16,7 +16,7 @@
       --gradient:  linear-gradient(135deg, #C13A1A 0%, #F28C1E 100%);
       --dark:      #1A1A1A;
       --mid:       #444444;
-      --light:     #7B2FBE;
+      --light:     #F9F6F2;
       --white:     #FFFFFF;
       --border:    #E8E2DA;
       --shadow-sm: 0 2px 8px rgba(0,0,0,.08);
@@ -1147,7 +1147,11 @@
       <div class="quote-form reveal">
         <h3>Request a Free Quote</h3>
         <p class="form-sub">Fill in your details and we'll be in touch within 24 hours.</p>
-        <form onsubmit="handleSubmit(event)">
+        <form action="https://api.web3forms.com/submit" method="POST" onsubmit="handleSubmit(event)">
+          <input type="hidden" name="access_key" value="c9c55c7d-e65f-4251-9906-57e2ff93a5bc" />
+          <input type="hidden" name="subject" value="New Quote Request — GFT Painting Contractors Website" />
+          <input type="hidden" name="from_name" value="GFT Website" />
+          <input type="hidden" name="redirect" value="false" />
           <div class="form-row">
             <div class="form-group">
               <label for="fname">First Name</label>
@@ -1257,12 +1261,23 @@
     });
 
     // Form submission
-    function handleSubmit(e) {
+    async function handleSubmit(e) {
       e.preventDefault();
       const btn = e.target.querySelector('button[type="submit"]');
-      btn.textContent = '✓ Request Sent! We\'ll be in touch soon.';
-      btn.style.background = 'linear-gradient(135deg,#2E7D32,#43A047)';
+      btn.textContent = 'Sending...';
       btn.disabled = true;
+      const data = new FormData(e.target);
+      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
+      const json = await res.json();
+      if (json.success) {
+        btn.textContent = '✓ Request Sent! We\'ll be in touch soon.';
+        btn.style.background = 'linear-gradient(135deg,#2E7D32,#43A047)';
+        e.target.reset();
+      } else {
+        btn.textContent = 'Something went wrong — please try again.';
+        btn.style.background = 'linear-gradient(135deg,#B71C1C,#E53935)';
+        btn.disabled = false;
+      }
     }
   </script>
 </body>
