@@ -1261,23 +1261,34 @@
     });
 
     // Form submission
-    async function handleSubmit(e) {
+    function handleSubmit(e) {
       e.preventDefault();
-      const btn = e.target.querySelector('button[type="submit"]');
-      btn.textContent = 'Sending...';
-      btn.disabled = true;
-      const data = new FormData(e.target);
-      const res = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: data });
-      const json = await res.json();
-      if (json.success) {
-        btn.textContent = '✓ Request Sent! We\'ll be in touch soon.';
-        btn.style.background = 'linear-gradient(135deg,#2E7D32,#43A047)';
-        e.target.reset();
-      } else {
-        btn.textContent = 'Something went wrong — please try again.';
-        btn.style.background = 'linear-gradient(135deg,#B71C1C,#E53935)';
-        btn.disabled = false;
-      }
+      const f = e.target;
+      const fname   = f.querySelector('#fname').value;
+      const lname   = f.querySelector('#lname').value;
+      const email   = f.querySelector('#email').value;
+      const phone   = f.querySelector('#phone').value;
+      const service = f.querySelector('#service').value;
+      const message = f.querySelector('#message').value;
+
+      const subject = encodeURIComponent(`New Quote Request from ${fname} ${lname}`);
+      const body = encodeURIComponent(
+`New quote request from the GFT website:
+
+Name:    ${fname} ${lname}
+Email:   ${email}
+Phone:   ${phone}
+Service: ${service}
+
+Project Details:
+${message}
+`);
+      window.location.href = `mailto:info@gftpaintingcontractors.co.za?subject=${subject}&body=${body}`;
+
+      const btn = f.querySelector('button[type="submit"]');
+      btn.textContent = '✓ Opening your email app...';
+      btn.style.background = 'linear-gradient(135deg,#2E7D32,#43A047)';
+      f.reset();
     }
   </script>
 </body>
